@@ -1,0 +1,347 @@
+{
+	"info": {
+		"_postman_id": "cabc68d9-ba37-4354-8f83-370f0934f57f",
+		"name": "Book API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48274286",
+		"_collection_link": "https://eagro-mobile-514792.postman.co/workspace/8b5fe6f2-1bbe-4b2f-8239-14751963ff3c/collection/48274286-cabc68d9-ba37-4354-8f83-370f0934f57f?action=share&source=collection_link&creator=48274286"
+	},
+	"item": [
+		{
+			"name": "Create Book",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test('preRequest', function () {",
+							"    pm.globals.set('bookId', Math.floor(Math.random() * 100000));",
+							"    pm.globals.set('publishDate', new Date().toISOString());",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('afterResponse', function () {",
+							"    pm.test('Status code is 200', function () {",
+							"        pm.expect(pm.response.code).to.equal(200);",
+							"    });",
+							"    pm.test('Response has valid book ID', function () {",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData.id).to.be.a('number');",
+							"        pm.expect(jsonData.title).to.eql('Test Automation Advanced');",
+							"    });",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set('bookId', jsonData.id);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{bookId}}\",\n    \"title\": \"Test Automation Advanced\",\n    \"description\": \"Book created via automated test\",\n    \"pageCount\": 450,\n    \"publishDate\": \"{{publishDate}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Books",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Book by ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('afterResponse', function () {",
+							"    pm.test('Status code is 200', function () {",
+							"        pm.expect(pm.response.code).to.equal(200);",
+							"    });",
+							"    pm.test('Book data matches', function () {",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData.id).to.eql('{{bookId}}');",
+							"        pm.expect(jsonData.title).to.eql('Test Automation Advanced');",
+							"        pm.expect(jsonData.description).to.eql('Book created via automated test');",
+							"        pm.expect(jsonData.pageCount).to.eql(450);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Books/{{bookId}}",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Nonexistent Book",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('afterResponse', function () {",
+							"   pm.test('Status code is 200', function () {",
+							"        pm.expect(pm.response.code).to.equal(200);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Books/20000",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Books",
+						"20000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Book Title",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('afterResponse', function () {",
+							"    pm.test('Status code is 200', function () {",
+							"        pm.expect(pm.response.code).to.equal(200);",
+							"    });",
+							"    pm.test('Title updated successfully', function () {",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData.title).to.eql('Updated Title');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{bookId}}\",\n    \"title\": \"Updated Title\",\n    \"description\": \"Book created via automated test\",\n    \"pageCount\": 450,\n    \"publishDate\": \"2025-09-09T00:33:08.729024\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Books/{{bookId}}",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Invalid Book",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('afterResponse', function () {",
+							"    pm.test('Status code is not 200', function () {",
+							"        pm.expect(pm.response.code).to.not.eql(200);",
+							"    });",
+							"    pm.test('Error message is present', function () {",
+							"        var jsonData = pm.response.json();",
+							"        pm.expect(jsonData).to.have.property('errors');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": true,
+				"disableUrlEncoding": false,
+				"disableCookies": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Invalid Book\",\n    \"description\": \"Invalid data test\",\n    \"pageCount\": -5,\n    \"publishDate\": \"2025-09-09T03:00:22.138Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakerestapi.azurewebsites.net/api/v1/Books",
+					"protocol": "https",
+					"host": [
+						"fakerestapi",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Books"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
